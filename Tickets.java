@@ -54,12 +54,18 @@ private int price=0;
 		try {
 		
 		if(is.readLine().equals("true")){
+			System.out.print("true");
 			os.println(true);
 		os.flush();
 		}    //服务器-客户机匹配成功
 		   information();
+			os.println(true);
+			os.flush();
 			action();
+			
 			buy();
+			os.println(true);
+			os.flush();
 			print();
 	       end();
 			
@@ -74,6 +80,7 @@ private int price=0;
 	public void information(){
 		try {
 			name = is.readLine();
+			System.out.println(name);
 			fout=new File(name);
 			files=new FileWriter(fout);
 			bout=new BufferedWriter(files);
@@ -82,6 +89,7 @@ private int price=0;
 			bout.newLine();
 		    String cellphone=is.readLine();
 			bout.write("客户联系方式："+cellphone);
+			System.out.println(cellphone);
 			bout.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -97,8 +105,12 @@ private int price=0;
 			os.flush();
 			bout.write("电影名字："+"你的名字(电影单价40)");
 			bout.newLine();
+			System.out.println("你的名字");
 			int hall=Integer.parseInt(is.readLine());
+			os.println(true);
+			os.flush();
 			movie_one( hall);
+			
 		}
 	}
 	
@@ -110,17 +122,20 @@ private int price=0;
 			Date date=new Date();
 			String date1=s1.format(date);
 			String str=is.readLine();
-			int days=daysBetween(str,date1);         //假定电影今天首映     
 			
+			int days=daysBetween(date1,str);         //假定电影今天首映     
+			System.out.println("场次:");
+			System.out.println(days);
 			
 			String s=String.valueOf(days);           
-			filename=".\\"+"yourname"+s+".dat";     //确定读入文件名,确定电影日期
+			/*filename=".\\"+"yourname.dat";     //确定读入文件名,确定电影日期
 			 fis=new FileInputStream(filename);      //创建输入对象流
 			in=new ObjectInputStream(fis);               
 			yourname=(YourName_Server)in.readObject();          //读入对象
-			
+			*/
 			if(days>0){
-				os.print(true);
+				System.out.println(2);
+				os.println(true);
 				os.flush();
 				bout.write("时间:  "+str);
 				bout.newLine();
@@ -128,10 +143,10 @@ private int price=0;
 				bout.newLine();
 			}else if(days==0){
 				if(date.getHours()>=yourname.time[hall]){
-					os.print(false);
+					os.println(false);
 					os.flush();
 				}else {
-					os.print(true);
+					os.println(true);
 					os.flush();
 					bout.write("时间：  "+str);
 					bout.newLine();
@@ -145,11 +160,11 @@ private int price=0;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
+		} /*catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
         
 	}
 	
@@ -172,29 +187,38 @@ private int price=0;
 	public void buy(){
 		
 		try {
-		    int k=Integer.parseInt(is.readLine());    //接收电影场次信息
+		    int k=Integer.parseInt(is.readLine());   
+		    System.out.print("场次：");
+		    System.out.print(k);                            //接收电影场次信息
 			for(int i=0;i<10;i++){
 				for(int j=0;j<10;j++){
 					os.println(yourname.seat[k][i][j]);
 					os.flush();                         //向客户端发送座位情况
 				}
 			}
-			String str = is.readLine();
-			while(str.equals(false)){     //判断条件  直到客户端发出结束请求结束循环
+			
+			while(true){     //判断条件  直到客户端发出结束请求结束循环
+				String str=is.readLine();
+				if(str.equals("false"))
+					break;
 			int seat=Integer.parseInt(str);
 			int row=seat/100;
 			int line=seat%100;
 			yourname.seat[k][row][line]=false;
+			System.out.println("座位：");
+			System.out.print(row);
+			System.out.print(line);
 			yourname.number--;
 			price+=40;
 			
 			os.println(true);
 			os.flush();
 			
+			
 			bout.write("所购座位："+row+"排"+line+"座");
 			bout.newLine();
 			}
-		} catch (NumberFormatException | IOException e1) {
+		} catch ( IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -225,6 +249,8 @@ private int price=0;
 			    
 			    
 			   try {
+				   System.out.print("取票码");
+				   System.out.print(sb.toString());
 				bout.write("取票码："+sb.toString());
 				bout.newLine();
 			} catch (IOException e) {

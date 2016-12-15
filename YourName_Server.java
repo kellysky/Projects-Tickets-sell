@@ -10,19 +10,20 @@ public class YourName_Server implements Serializable{
 	
 	//将不同场次的时间  座位初始化
 	public void initialize(){
-		for(int k=0;k<3;k++){
-	       for(int i=0;i<10;i++){
-		     for(int j=0;i<10;j++)
-			    seat[k][i][j]=true;
-	}
+		
 		}
 		
-		time[0]=10;
-		time[1]=15;
-		time[2]=20;
-	}
 public YourName_Server(){
-	initialize();
+	for(int k=0;k<3;k++){
+	       for(int i=0;i<10;i++){
+		     for(int j=0;j<10;j++)
+			    seat[k][i][j]=true;
+}
+	}
+
+	time[0]=10;
+	time[1]=15;
+	time[2]=20;
 }
 
 

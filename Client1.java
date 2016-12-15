@@ -18,15 +18,20 @@ public class Client1 {
 	
 	try {
 		//String inputString;
-		server=new Socket("192.168.1.105",5555);
+		server=new Socket("10.40.193.124",5555);
+		
 	//System.out.println("登录成功");
 	//BufferedReader sin=new BufferedReader(new InputStreamReader(System.in));
 		PrintWriter os = new PrintWriter(server.getOutputStream());//////////////////////////////////////////////////////////////////////////////////////////////
 	//输出给服务器
 	BufferedReader is = new BufferedReader(new InputStreamReader(server.getInputStream()));
 	//服务器的输入
-	
-	load();
+	os.println("true");
+	os.flush();
+	if(is.readLine().equals("true")){
+	System.out.println("连接成功");
+		load();
+	}
 	if(is.readLine().equals("true"))
 	movie();
 	if(is.readLine().equals("true"))

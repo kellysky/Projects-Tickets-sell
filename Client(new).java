@@ -5,8 +5,9 @@ import java.net.*;
 public class Client1 {
 	static Socket server=null;
 	private static PrintWriter os;
-	private BufferedReader is;
+	private static BufferedReader is;
 	private static BufferedReader sin;
+	private static String cc;
 	//PrintWriter os = new PrintWriter(server.getOutputStream());
 	/**
 	 * @param args
@@ -18,15 +19,21 @@ public class Client1 {
 	
 	try {
 		//String inputString;
-		server=new Socket("192.168.1.105",5555);
+		server=new Socket("10.16.42.33",5555);
+		
 	//System.out.println("登录成功");
 	//BufferedReader sin=new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter os = new PrintWriter(server.getOutputStream());//////////////////////////////////////////////////////////////////////////////////////////////
+		 os = new PrintWriter(server.getOutputStream());//////////////////////////////////////////////////////////////////////////////////////////////
 	//输出给服务器
-	BufferedReader is = new BufferedReader(new InputStreamReader(server.getInputStream()));
+	 is = new BufferedReader(new InputStreamReader(server.getInputStream()));
 	//服务器的输入
-	
-	load();
+	 sin=new BufferedReader(new InputStreamReader(System.in));
+os.println("true");//
+	os.flush();	//
+	if(is.readLine().equals("true")){
+	System.out.println("欢迎来到王森灏购票系统");
+		load();
+	}
 	if(is.readLine().equals("true"))
 	movie();
 	if(is.readLine().equals("true"))
@@ -35,15 +42,14 @@ public class Client1 {
 	date();
 	if(is.readLine().equals("true"))
 	seat();
-	
-	
+	System.out.println("取票码为"+is.readLine());//读取服务器发送的取票码
 	
 	
 		//inputString=sin.readLine();
 		os.close();
 		is.close();
 		server.close();
-		System.out.println("聊天结束");
+		System.out.println("退出购票");
 
 	}catch(UnknownHostException e){
 		e.printStackTrace();
@@ -74,7 +80,8 @@ public class Client1 {
 		System.out.println("1.8");
 		System.out.println("2.16");
 		System.out.println("3.21");
-		os.println(sin.readLine());
+		cc=sin.readLine();
+		os.println(cc);
 		os.flush();
 	}
     static void date() throws IOException{
@@ -84,10 +91,22 @@ public class Client1 {
     	System.out.println("  日");
     	os.println(sin.readLine());
     	os.flush();
+    	System.out.println(1);
     }
     static void seat() throws IOException{
     	System.out.println("请选择您想要的座位");
-    	os.println(sin.readLine());
+    	os.println(cc);
+    	//显示所有座位有没有的情况,卖出的座位标记成无法点击
+    	while(true){
+    		cc=sin.readLine();
+    		if(cc.equals("false"))
+    			break;
+    		else  {os.println(cc);//XXXX
+    	os.flush();
+    	System.out.println("请继续选择您要的座位");
+    	}
+    	}
+    	os.println("false");
     	os.flush();
     }
 }

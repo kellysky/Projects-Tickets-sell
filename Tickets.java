@@ -14,8 +14,8 @@ public class Tickets  implements Runnable{
 private Socket client;
 private BufferedReader is;                                      //socket输入流
 private PrintWriter os;                                        //socket输出流
-private YourName_Server yourname;                               //对象类
-private Hashtable<String,YourName_Server> table;              //文件中写入多个对象，实现对对象数据的修改 
+private AllMovie movie;                                          //运用多态性
+private Hashtable<String,AllMovie> table;                     //文件中写入多个对象，实现对对象数据的修改 
 private Hashtable<String,ClientsRecords> records ; 
 private FileOutputStream fos;                                 //文件输出流，用于写入电影对象
 private FileInputStream fis;                                   //文件输入流，用于读取对象
@@ -27,11 +27,13 @@ private Customer customer;
 private FileOutputStream  files;                            //用于写入用户信息
 private String name;
 private ClientsRecords newClients;
+private DataOutputStream data;
+
 
    //构造函数
    public Tickets(Socket client){
 	 this.client=client;
-	 table=new Hashtable<String,YourName_Server>();
+	 table=new Hashtable<String,AllMovie>();
 	 customer=new Customer();
 	  initialize();
    }
@@ -44,6 +46,7 @@ private ClientsRecords newClients;
 			//由Socket对象得到输入流，构造BufferedReader对象
 			 os=new PrintWriter(client.getOutputStream());
 			 //由Socket对象构造输出流，构造PrintWriter对象
+			 data=new DataOutputStream(client.getOutputStream());                                   //构造文件 图片输出流
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,7 +56,7 @@ private ClientsRecords newClients;
 
 	public void run(){
 		try {
-		
+			initialize();
 		if(is.readLine().equals("true")){
 			System.out.print("true");
 			os.println(true);
@@ -102,6 +105,7 @@ private ClientsRecords newClients;
 				boolean contigo=false;		
 				
 			for(int i=0;i<table.size();i++){
+				try{
 				if(records.get(name).name.equals(name)){                           //此处有可能发生异常，需处理
 					if(records.get(name).code.equals(code)){
 						if(checkcode.equals(check_code)){
@@ -125,6 +129,10 @@ private ClientsRecords newClients;
 					os.println("用户名不存在");
 					os.flush();
 				}
+				}catch(Exception e){
+					os.println("该用户不存在");                                 //
+					os.flush();                                                //
+				}
 			}
 			if(name.equals("false")||contigo==true)
 				break;	
@@ -146,8 +154,9 @@ private ClientsRecords newClients;
 		
 			try {
 				newClients=new ClientsRecords();
+				name = is.readLine();
 				records.put(name,newClients);
-				customer.name = is.readLine();
+				customer.name=name;
 				System.out.println(customer.name);
 				
 			    customer.cellphone=is.readLine();
@@ -169,6 +178,93 @@ private ClientsRecords newClients;
 			
 		
 	}
+	
+	
+	//传输图片以及电影介绍  、 观众影评
+	public void movie_information(){
+		
+		  try {
+			  String[] str=new String[3];
+			  str[0]=".\\1283314_144021_7455.jpg";
+			  str[1]=".\\17_1471423924110436.jpg";
+			  str[2]=".\\11809-3.jpg";
+			  String[] string=new String[3];
+			  string[2]="TheGreatWall.txt";
+			  string[1]="TheWastedTime.txt";
+			  string[0]="YourName.txt";
+			  for(int i=0;i<3;i++){
+			    byte[] sendbyte=new byte[1024];
+				File ins=new File(str[i]);	
+				File inf=new File(string[i]);
+				int length=0;
+			  FileInputStream fis=new FileInputStream(ins);
+			  FileInputStream fif=new FileInputStream(inf);
+			  while ((length = fis.read(sendbyte, 0, sendbyte.length)) > 0) {
+			      data.write(sendbyte, 0, length);
+			      data.flush();
+			      
+			  }
+			  while((length=fif.read(sendbyte,0,sendbyte.length))>0){
+				  data.write(sendbyte,0,length);
+				  data.flush();
+			  }
+			  os.println(true);
+			  os.flush();
+			  }
+			if(is.readLine().equals("true")){                             //打开观众留言
+				if(is.readLine().equals("1")){
+					FileInputStream stream=new FileInputStream("ClientLibrary");					              
+					ObjectInputStream object=new ObjectInputStream(stream);               					
+					Hashtable<String,Customer> hash=(Hashtable)object.readObject();
+					for(int i=0;i<hash.size();i++){
+						if(hash.get(i).tickets_name.equals("YourName")){
+							os.println("用户"+hash.get(i).cellphone+":");
+							os.println(hash.get(i).message);
+							os.flush();
+						}
+					}
+					stream.close();
+					object.close();
+				}
+				if(is.readLine().equals("2")){
+						FileInputStream stream=new FileInputStream("ClientLibrary");					              
+						ObjectInputStream object=new ObjectInputStream(stream);               					
+						Hashtable<String,Customer> hash=(Hashtable)object.readObject();
+						for(int i=0;i<hash.size();i++){
+							if(hash.get(i).tickets_name.equals("YourName")){
+								os.println("用户"+hash.get(i).cellphone+":");
+								os.println(hash.get(i).message);
+								os.flush();
+							}
+						}
+						stream.close();
+						object.close();
+							}
+								
+				if(is.readLine().equals("3")){
+								FileInputStream stream=new FileInputStream("ClientLibrary");					              
+								ObjectInputStream object=new ObjectInputStream(stream);               					
+								Hashtable<String,Customer> hash=(Hashtable)object.readObject();
+								for(int i=0;i<hash.size();i++){
+									if(hash.get(i).tickets_name.equals("YourName")){
+										os.println("用户"+hash.get(i).cellphone+":");
+										os.println(hash.get(i).message);
+										os.flush();
+					}
+				}
+								stream.close();
+								object.close();
+			}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
 	
 	//选择电影
 	public void  action() throws IOException{
@@ -217,21 +313,23 @@ private ClientsRecords newClients;
 	public void movie_one(int hall){	
 		
 		try {
+						
 			SimpleDateFormat s1=new SimpleDateFormat(" yyyy-MM-dd ");
 			Date date=new Date();
 			String date1=s1.format(date);
-			String str=is.readLine();
+			String str=is.readLine();                        //得到观影日期
 			
 			int days=daysBetween(date1,str);                //假定电影今天首映     
 			System.out.println("场次:");
 			System.out.println(days);
 			
-			String s=String.valueOf(days);           
-			filename=".\\yourname.dat";                     //确定读入文件名,确定电影日期
+			String s=String.valueOf(days);           		                                               
+			filename="MovieName.dat";                           //确定读入文件名,确定电影日期
 			fis=new FileInputStream(filename);                 //创建输入对象流
 			in=new ObjectInputStream(fis);               
 			table=(Hashtable)in.readObject();               //
-			yourname=table.get(s);                          //通过键值调用特定对象
+			movie=table.get(s);                             //通过键值调用特定对象
+			
 			if(days>0){
 				customer.time=str;
 				customer.date=date1;
@@ -239,7 +337,7 @@ private ClientsRecords newClients;
 				os.flush();
 		
 			}else if(days==0){
-				if(date.getHours()>=yourname.time[hall]){
+				if(date.getHours()>=movie.time[hall]){
 					os.println(false);
 					os.flush();
 				}else {
@@ -288,7 +386,7 @@ private ClientsRecords newClients;
 		    System.out.println(k);                            //接收电影场次信息
 			for(int i=0;i<10;i++){
 				for(int j=0;j<10;j++){
-					os.println(yourname.seat[k][i][j]);
+					os.println(movie.seat[k][i][j]);
 					os.flush();                         //向客户端发送座位情况
 				}
 			}
@@ -301,15 +399,15 @@ private ClientsRecords newClients;
 			int seat=Integer.parseInt(str);
 			int row=seat/100;
 			int line=seat%100;
-			yourname.seat[k][row][line]=false;
-			customer.price+=40;
+			movie.seat[k][row][line]=false;
+			customer.price+=movie.money;
 			String s1=String.valueOf(row);
 			String s2=String.valueOf(line);
 			customer.seat[0]=row+"排"+line+"座";
 			System.out.println("座位：");
 			System.out.print(row);
 			System.out.print(line);
-			yourname.number--;
+			movie.number--;
 			
 			
 			os.println(true);
@@ -398,10 +496,12 @@ private ClientsRecords newClients;
 		
 			
 			String str=is.readLine();                     //得到用户评价
-			customer.message=str;   
+			customer.message=str;  
+			Hashtable<String,Customer> list=new Hashtable<String,Customer>();
+			 list.put(customer.tickets_name,customer);
 			files=new FileOutputStream("ClientLibrary");
 			object=new ObjectOutputStream(files);
-			object.writeObject(customer);           //写入对象
+			object.writeObject(list);           //写入对象
 			object.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

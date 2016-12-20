@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 public  class Movie {
 	public YourName_Server[] yourname=new YourName_Server[15];
-	public GreatWall[]  greatwall=new GreatWall[15];
+	public GreatWall[]       greatwall=new GreatWall[15];
 	public TheWastedTime[] thewastedtime=new TheWastedTime[15];
    public void init(){
 	for(int i=0;i<15;i++){
@@ -22,18 +22,16 @@ public  class Movie {
 	   Hashtable<String,GreatWall> table2=new Hashtable<String,GreatWall>();
 	   Hashtable<String,TheWastedTime> table3=new Hashtable<String,TheWastedTime>();
 	   
-	   String name=".\\yourname.dat";
-	   String name2=".\\greatwall.dat";
-	   String name3=".\\thewastedtime.dat";
-	   
+	   String name=".\\MovieName.dat";
+	  
   
 		for(int i=0;i<15;i++){
 			String str=String.valueOf(i);	   
 		  
 		try {
 			FileOutputStream fos = new FileOutputStream(name);
-			FileOutputStream fos2 = new FileOutputStream(name2);
-			FileOutputStream fos3 = new FileOutputStream(name3);
+			FileOutputStream fos2 = new FileOutputStream(name);
+			FileOutputStream fos3 = new FileOutputStream(name);
 			 
 			ObjectOutputStream out=new ObjectOutputStream(fos);
 			table.put(str, yourname[i]);

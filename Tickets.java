@@ -89,7 +89,7 @@ private DataOutputStream data;
     public void log(){
     	
     	try {
-    		fis=new FileInputStream("ClientsRecords");
+    		fis=new FileInputStream(".//ClientsRecords.dat");
 			in=new ObjectInputStream(fis);
 			records=(Hashtable)in.readObject();
 			while(true){
@@ -106,7 +106,7 @@ private DataOutputStream data;
 				
 			for(int i=0;i<table.size();i++){
 				try{
-				if(records.get(name).name.equals(name)){                           //此处有可能发生异常，需处理
+				if(records.get(name)!=null)){                           //此处有可能发生异常，需处理
 					if(records.get(name).code.equals(code)){
 						if(checkcode.equals(check_code)){
 					customer.name=records.get(name).name;                                     //登录成功
@@ -208,9 +208,9 @@ private DataOutputStream data;
 				  data.write(sendbyte,0,length);
 				  data.flush();
 			  }
-			  os.println(true);
-			  os.flush();
+			 
 			  }
+			  data.close();
 			if(is.readLine().equals("true")){                             //打开观众留言
 				if(is.readLine().equals("1")){
 					FileInputStream stream=new FileInputStream("ClientLibrary");					              
@@ -479,12 +479,16 @@ private DataOutputStream data;
 			os.flush();
 			os.println(customer.tickets_name);
 			os.flush();
+			os.println(customer.number);
+			os.flush();
 			os.println(customer.hall);
 			os.flush();
 			os.println(customer.time);
 			os.flush();
-			os.println(customer.number);
+			os.println(customer.date);
 			os.flush();
+			
+			
 			for(int i=0;i<customer.seat.length;i++){
 				os.println(customer.seat[i]);
 				os.flush();

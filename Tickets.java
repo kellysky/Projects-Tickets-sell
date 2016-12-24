@@ -57,14 +57,17 @@ private DataOutputStream data;
 	public void run(){
 		try {
 			initialize();
-		if(is.readLine().equals("true")){
 			System.out.print("true");
-			os.println(true);
-		os.flush();
-		}    //服务器-客户机匹配成功
-		    log();
-		    if(is.readLine().equals("true"))
-		    information();
+			//os.println(true);
+		   // os.flush();
+		   
+		    
+		/*    if(is.readLine().equals("true")){
+		    	  information();
+		    }else {
+		    	log();
+		    }*/
+		    movie_information();
 			os.println(true);
 			os.flush();
 			action();
@@ -106,7 +109,7 @@ private DataOutputStream data;
 				
 			for(int i=0;i<table.size();i++){
 				try{
-				if(records.get(name)!=null)){                           //此处有可能发生异常，需处理
+				if(records.get(name)!=null){                           //此处有可能发生异常，需处理
 					if(records.get(name).code.equals(code)){
 						if(checkcode.equals(check_code)){
 					customer.name=records.get(name).name;                                     //登录成功
@@ -118,19 +121,23 @@ private DataOutputStream data;
 					os.println(true);                                                         //登陆成功
 				    os.flush();
 						}else{
-							os.println("验证码输入错误");
+							os.println(false);
+							System.out.println("验证码输入错误");
 							os.flush();
 						}
 				}else{
-					os.println("密码输入错误");
+					os.println(false);
+					System.out.println("密码输入错误");
 					os.flush();
 				}
 				}else{
-					os.println("用户名不存在");
+					os.println(false);
+					System.out.println("用户名不存在");
 					os.flush();
 				}
 				}catch(Exception e){
-					os.println("该用户不存在");                                 //
+					os.println(false);
+					System.out.println("该用户不存在");                                 //
 					os.flush();                                                //
 				}
 			}
@@ -155,7 +162,6 @@ private DataOutputStream data;
 			try {
 				newClients=new ClientsRecords();
 				name = is.readLine();
-				records.put(name,newClients);
 				customer.name=name;
 				System.out.println(customer.name);
 				
@@ -167,6 +173,7 @@ private DataOutputStream data;
 			    newClients.name=customer.name;
 			    newClients.cellphone=customer.cellphone;
 			    newClients.code=code;
+				records.put(name,newClients);                  //向文件中写入新的客户信息
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -192,13 +199,23 @@ private DataOutputStream data;
 			  string[2]="TheGreatWall.txt";
 			  string[1]="TheWastedTime.txt";
 			  string[0]="YourName.txt";
+			  os.println(str.length);
+			  os.flush();
 			  for(int i=0;i<3;i++){
-			    byte[] sendbyte=new byte[1024];
-				File ins=new File(str[i]);	
-				File inf=new File(string[i]);
-				int length=0;
-			  FileInputStream fis=new FileInputStream(ins);
-			  FileInputStream fif=new FileInputStream(inf);
+			  
+			  FileInputStream fis=new FileInputStream(new File(str[i]));
+			  FileInputStream fif=new FileInputStream(new File(string[i]));
+			  os.println(new File(str[i]).length());                            //发送图片的长度
+			  os.flush();
+			  os.println(new File(string[i]).length());                             //发送文件的长度
+			  os.flush();
+			  }
+			  
+			  for(int i=0;i<3;i++){
+				  byte[] sendbyte=new byte[1024];
+				 int length=0;
+				 FileInputStream fis=new FileInputStream(new File(str[i]));
+				 FileInputStream fif=new FileInputStream(new File(string[i]));
 			  while ((length = fis.read(sendbyte, 0, sendbyte.length)) > 0) {
 			      data.write(sendbyte, 0, length);
 			      data.flush();
@@ -208,9 +225,11 @@ private DataOutputStream data;
 				  data.write(sendbyte,0,length);
 				  data.flush();
 			  }
-			 
+			  System.out.println("1");
 			  }
+			  
 			  data.close();
+			  System.out.println("success");
 			if(is.readLine().equals("true")){                             //打开观众留言
 				if(is.readLine().equals("1")){
 					FileInputStream stream=new FileInputStream("ClientLibrary");					              
@@ -274,7 +293,7 @@ private DataOutputStream data;
 
 			customer.tickets_name="你的名字(电影单价40)";
 			System.out.println("你的名字");
-			int hall=Integer.parseInt(is.readLine());
+			int hall=Integer.parseInt(is.readLine());                                 //电影场次
 			customer.hall=hall;
 			os.println(true);
 			os.flush();
@@ -302,7 +321,7 @@ private DataOutputStream data;
 			System.out.println("罗曼蒂克消亡史");
 			int hall=Integer.parseInt(is.readLine());
 			customer.hall=hall;
-			os.println(true);
+			os.println(true);                       //再次发送信号
 			os.flush();
 			movie_one( hall);
 			

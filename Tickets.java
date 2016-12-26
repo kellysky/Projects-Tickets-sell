@@ -12,6 +12,7 @@ import java.util.Random;
 public class Tickets  implements Runnable{
 	
 private Socket client;
+private Socket client2;
 private BufferedReader is;                                      //socket输入流
 private PrintWriter os;                                        //socket输出流
 private AllMovie movie;                                          //运用多态性
@@ -31,8 +32,9 @@ private DataOutputStream data;
 
 
    //构造函数
-   public Tickets(Socket client){
+   public Tickets(Socket client,Socket client2){
 	 this.client=client;
+	 this.client2=client2;
 	 table=new Hashtable<String,AllMovie>();
 	 customer=new Customer();
 	  initialize();
@@ -46,7 +48,7 @@ private DataOutputStream data;
 			//由Socket对象得到输入流，构造BufferedReader对象
 			 os=new PrintWriter(client.getOutputStream());
 			 //由Socket对象构造输出流，构造PrintWriter对象
-			 data=new DataOutputStream(client.getOutputStream());                                   //构造文件 图片输出流
+			 data=new DataOutputStream(client2.getOutputStream());                                   //构造文件 图片输出流
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -211,23 +213,29 @@ private DataOutputStream data;
 			  os.flush();
 			  }
 			  
-			  for(int i=0;i<3;i++){
+			for(int i=0;i<3;i++){
 				  byte[] sendbyte=new byte[1024];
 				 int length=0;
 				 FileInputStream fis=new FileInputStream(new File(str[i]));
 				 FileInputStream fif=new FileInputStream(new File(string[i]));
-			  while ((length = fis.read(sendbyte, 0, sendbyte.length)) > 0) {
-			      data.write(sendbyte, 0, length);
+			  while ((length = fis.read(sendbyte,0,sendbyte.length)) > 0) {
+			      data.write(sendbyte,0,sendbyte.length);
 			      data.flush();
 			      
 			  }
+		//	  data.writeBoolean(true);
+		//	  data.flush();
 			  while((length=fif.read(sendbyte,0,sendbyte.length))>0){
-				  data.write(sendbyte,0,length);
+				  data.write(sendbyte,0,sendbyte.length);
 				  data.flush();
 			  }
+			//  data.writeBoolean(true);
+			//  data.flush();
 			  System.out.println("1");
 			  }
-			  
+			/*  for(int i=0;i<3;i++){
+				  sendFile(str[i],new File(string[i]).length());
+			  }*/
 			  data.close();
 			  System.out.println("success");
 			if(is.readLine().equals("true")){                             //打开观众留言
@@ -284,6 +292,32 @@ private DataOutputStream data;
 		} 
 	}
 	
+	
+	public void sendFile(String str,long h){
+		try {
+			data=new DataOutputStream(client.getOutputStream());
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}            
+		
+		
+	  try {
+		  FileInputStream fis = new FileInputStream(new File(str));
+			int count=0;
+		  byte[] sendbyte=new byte[1024];
+			 int length=0;
+		while ((length = fis.read(sendbyte,0,sendbyte.length)) > 0) {
+		      data.write(sendbyte,0,sendbyte.length);
+		      data.flush();
+		  }
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	     
+	 
+	}
 	
 	//选择电影
 	public void  action() throws IOException{

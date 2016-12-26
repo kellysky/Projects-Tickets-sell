@@ -4,6 +4,7 @@ import java.net.*;
 
 public class Client1 {
 	static Socket server=null;
+	static Socket server2=null;
 	private static PrintWriter os;
 	private static BufferedReader is;
 	private static BufferedReader sin;
@@ -14,13 +15,13 @@ public class Client1 {
 	private static int k;
 	
 	//PrintWriter os = new PrintWriter(server.getOutputStream());
-	/**
+	/**p
 	 * @param args
 	 */
 	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
+		// TODO Auto
 //Socket server=null;
-		int i=0;
+		
 		int j=0;
 		int l=0;
 		String[] movie_pic=new String[3];
@@ -33,55 +34,62 @@ String[] movie_name=new String[3];
 	movie_name[2]="d:/dsb.txt";
 	try {
 		//String inputString;
-		server=new Socket("10.16.42.32",5555);
-		
-	//System.out.println("登录成功");
+		server=new Socket("127.0.0.1",5555);
+		server2=new Socket("127.0.0.1",6666);
+	System.out.println("登录成功");
 	//BufferedReader sin=new BufferedReader(new InputStreamReader(System.in));
-		 os = new PrintWriter(server.getOutputStream());//////////////////////////////////////////////////////////////////////////////////////////////
+		 os = new PrintWriter(server.getOutputStream());
 	//输出给服务器
 	 is = new BufferedReader(new InputStreamReader(server.getInputStream()));
 	//服务器的输入
 	 sin=new BufferedReader(new InputStreamReader(System.in));
 	 //客户端输入
-	  data = new DataInputStream(server.getInputStream());
+	  data = new DataInputStream(server2.getInputStream());
 	  //接收服务器的图片
-	  os.println("true");
-	  os.flush();
-	  System.out.println(is.readLine());
-	  while(data.readByte()==0011){
-	  fin=new FileOutputStream(new File(movie_pic[j]));
-	 //接受图片
-	  j++;
-	  fis=new FileOutputStream(new File(movie_name[i]));
-	  i++;
-	 // os.println("true");//
-	//os.flush();	//
-	//if(is.readLine().equals("true")){
-	System.out.println("欢迎来到王森灏购票系统");
-		//load();       //登录或创建
-		int length=0;
-		//while(true){
-		byte[] getbyte=new byte[1024];
-		System.out.println("接收数据");
-		while((length=data.read(getbyte,0,getbyte.length))>0){
-			fin.write(getbyte,0,length);
-			fin.flush();
+	 String num=is.readLine();
+	 int a=Integer.parseInt(num);                                  //文件个数
+	 byte[] getbyte=new byte[1024];
+	 int[] pic_length=new int[a];
+	 int[] name_length=new int[a];
+	 for(int k=0;k<a;k++){
+		  pic_length[k]=Integer.parseInt(is.readLine());
+		 System.out.println(pic_length[k]);
+		  name_length[k]=Integer.parseInt(is.readLine());
+		 System.out.println(name_length[k]);
+	 }
+	 
+	 for(int k=0;k<a;k++){
+		 fin=new FileOutputStream(new File(movie_pic[k]));
+		 fis=new FileOutputStream(new File(movie_name[k]));
+		    int i=0;
+			int length=0;
+			while((length=data.read(getbyte,0,getbyte.length))>0){                                  //接收图片
+				fin.write(getbyte,0,length);
+				fin.flush();
+				i+=1024;
+				if(i>pic_length[k]){
+					i=0;
+					System.out.println("s");
+					break;
+				}
+			}
 			
-	if(data.readByte()==1100)
-		break;
-		}
-		while((length=data.read(getbyte,0,getbyte.length))>0){
-			fis.write(getbyte,0,getbyte.length);
-			fis.flush();
-			
-		}
-	}
+			while((length=data.read(getbyte,0,getbyte.length))>0){                                //接收文件
+				fis.write(getbyte,0,length);
+				fis.flush();
+				i+=1024;
+				if(i>name_length[k]){
+					i=0;
+					System.out.println("x");
+					break;
+				}
+			}
+			 System.out.println("success");
 	
-		//if(is.readLine().equals("true")){
-		//	System.out.println("接收完毕");
-			//break;
-		//}
-		//}
+	 }
+	          data.close();
+	System.out.println("true");
+	
 		System.out.println("是否想看电影的评价");
 		System.out.println("1.是");
 		System.out.println("2.否");
@@ -115,7 +123,7 @@ String[] movie_name=new String[3];
 	System.out.println("影厅:"+is.readLine());
 	System.out.println("日期:"+is.readLine());
 	System.out.println("数量:"+is.readLine());
-	System.out.printf("座位:");
+	System.out.print("座位:");
 	if(l<k){
 	System.out.println(is.readLine());
 	}
@@ -155,8 +163,8 @@ String[] movie_name=new String[3];
 			 os.println(sin.readLine());
 			 os.flush();
 		 }
-		 //有账号直接登录
-		 else{
+		 //有账号直接登录                                           
+		 else{                                      //代码有问题
 		 System.out.println("输入您的账户名字:");
 		 os.println("客户名字为"+sin.readLine());
 		 os.flush();
@@ -165,10 +173,11 @@ String[] movie_name=new String[3];
 		 os.flush();
 		 System.out.println("输入您的密码:");
 			 os.println("客户密码为"+sin.readLine());
-			 os.flush();
+			 os.flush();                                                 //此处缺少验证码
 		System.out.println("登录成功");
 	}
 		 }
+	 
       static void movie() throws IOException{//第二步选择电影
     	  System.out.println("请选择您想要的电影:");
     	  System.out.println("1.Your Name-40￥");

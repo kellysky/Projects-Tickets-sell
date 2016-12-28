@@ -1,22 +1,13 @@
-import java.awt.EventQueue;
+package test;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import java.awt.Font;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.SwingConstants;
 
+public class C2 extends JFrame {
 
-public class C2 {
-
-	private JFrame frame;
+	private JFrame frame2;
 	private JTextField textField;
 	private JPasswordField passwordField;
 	private JTextField textField_1;
@@ -29,7 +20,7 @@ public class C2 {
 			public void run() {
 				try {
 					C2 window = new C2();
-					window.frame.setVisible(true);
+					window.frame2.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,58 +39,75 @@ public class C2 {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setFont(new Font("楷体", Font.PLAIN, 12));
-		frame.setTitle("\u6CE8\u518C");
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2 = new JFrame();
+		frame2.setFont(new Font("楷体", Font.PLAIN, 12));
+		frame2.setTitle("注册");
+		frame2.setBounds(100, 100, 450, 300);
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel, BorderLayout.SOUTH);
+		frame2.getContentPane().add(panel, BorderLayout.SOUTH);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JButton btnNewButton = new JButton("\u786E\u5B9A");
+		JButton btnNewButton = new JButton("确定");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				frame2.setVisible(false);
+				new C5().setVisible(true);
+			}
+		});
 		btnNewButton.setFont(new Font("楷体", Font.PLAIN, 20));
 		panel.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("\u767B\u9646");
+		JButton btnNewButton_1 = new JButton("登录");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				frame2.setVisible(false);
+				new C3().setVisible(true);
+			}
+		});
 		btnNewButton_1.setFont(new Font("楷体", Font.PLAIN, 20));
 		panel.add(btnNewButton_1);
 		
 		JPanel panel_1 = new JPanel();
-		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
-		panel_1.setLayout(new MigLayout("", "[][][][grow]", "[][][][][][][][]"));
+		frame2.getContentPane().add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new MigLayout("", "[][][][][][][][][][][grow]", "[][][][][][]"));
 		
-		JLabel lblNewLabel = new JLabel("\u7528\u6237\u540D\uFF1A");
+		JLabel lblNewLabel = new JLabel("用户名：");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_1.add(lblNewLabel, "cell 0 1");
+		panel_1.add(lblNewLabel, "cell 0 1,grow");
 		
 		textField = new JTextField();
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_1.add(textField, "cell 1 1 3 1,growx");
+		panel_1.add(textField, "cell 4 1 7 1,grow");
 		textField.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("\u5BC6\u7801\uFF1A");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_1.add(lblNewLabel_1, "cell 0 3");
-		
-		passwordField = new JPasswordField();
-		passwordField.setFont(new Font("楷体", Font.PLAIN, 20));
-		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
-		panel_1.add(passwordField, "cell 1 3 3 1,growx");
-		
-		JLabel lblNewLabel_2 = new JLabel("\u624B\u673A\u53F7\u7801\uFF1A");
+		JLabel lblNewLabel_2 = new JLabel("密码：");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_2.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_1.add(lblNewLabel_2, "cell 0 5");
+		panel_1.add(lblNewLabel_2, "cell 0 3,grow");
+		
+		passwordField = new JPasswordField();
+		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
+		passwordField.setFont(new Font("楷体", Font.PLAIN, 20));
+		panel_1.add(passwordField, "flowx,cell 4 3 7 1,grow");
+		
+		JLabel lblNewLabel_1 = new JLabel("手机号码：");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setFont(new Font("楷体", Font.PLAIN, 20));
+		panel_1.add(lblNewLabel_1, "cell 0 5,grow");
 		
 		textField_1 = new JTextField();
 		textField_1.setHorizontalAlignment(SwingConstants.CENTER);
 		textField_1.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_1.add(textField_1, "cell 1 5 3 1,growx");
+		panel_1.add(textField_1, "cell 4 5 7 1,grow");
 		textField_1.setColumns(10);
 	}
+
 
 }

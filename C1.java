@@ -1,18 +1,14 @@
-import java.awt.EventQueue;
+package test;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
 
 
-public class C1 {
+public class C1  extends JFrame {
 
-	private JFrame frame;
+	private JFrame frame1;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -22,7 +18,7 @@ public class C1 {
 			public void run() {
 				try {
 					C1 window = new C1();
-					window.frame.setVisible(true);
+					window.frame1.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -41,32 +37,56 @@ public class C1 {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setFont(new Font("楷体", Font.PLAIN, 12));
-		frame.setTitle("\u738B\u68EE\u704F\u8D2D\u7968\u7CFB\u7EDF");
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame1 = new JFrame();
+		frame1.setFont(new Font("楷体", Font.PLAIN, 12));
+		frame1.setTitle("王森灏购票系统");
+		frame1.setBounds(100, 100, 450, 300);
+		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel, BorderLayout.SOUTH);
+		frame1.getContentPane().add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JButton btnNewButton = new JButton("\u6CE8\u518C");
+		btnNewButton = new JButton("注册");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame1.setVisible(false);
+				new C2().setVisible(true);
+			}
+
+		
+			
+		});
 		btnNewButton.setFont(new Font("楷体", Font.PLAIN, 20));
 		panel.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("\u767B\u9646");
+		
+		JButton btnNewButton_1 = new JButton("登录");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame1.setVisible(false);
+				new C3().setVisible(true);
+			}
+		});
 		btnNewButton_1.setFont(new Font("楷体", Font.PLAIN, 20));
 		panel.add(btnNewButton_1);
 		
+		
 		JPanel panel_1 = new JPanel();
-		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
+		frame1.getContentPane().add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel = new JLabel("\u6B22\u8FCE\u6765\u5230\u738B\u68EE\u704F\u8D2D\u7968\u7CFB\u7EDF");
+		JLabel lblNewLabel = new JLabel("欢迎来到王森灏购票系统");
 		lblNewLabel.setFont(new Font("楷体", Font.PLAIN, 30));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 	}
 
+
+
 }
+
+
+	

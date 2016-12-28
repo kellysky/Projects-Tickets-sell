@@ -1,23 +1,12 @@
-import java.awt.EventQueue;
+package test;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JList;
-import javax.swing.JSpinner;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JScrollBar;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
 
+public class C6 extends JFrame {
 
-public class C6 {
-
-	private JFrame frame;
+	private JFrame frame6;
 
 	/**
 	 * Launch the application.
@@ -27,7 +16,7 @@ public class C6 {
 			public void run() {
 				try {
 					C6 window = new C6();
-					window.frame.setVisible(true);
+					window.frame6.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -46,62 +35,76 @@ public class C6 {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame6 = new JFrame();
+		frame6.setTitle("电影列表");
+		frame6.setFont(new Font("楷体", Font.PLAIN, 12));
+		frame6.setBounds(100, 100, 450, 300);
+		frame6.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame6.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel, BorderLayout.SOUTH);
+		frame6.getContentPane().add(panel);
+		panel.setLayout(null);
 		
-		JButton btnNewButton = new JButton("\u786E\u5B9A");
-		btnNewButton.setFont(new Font("楷体", Font.PLAIN, 20));
+		JButton btnNewButton = new JButton("");
+		btnNewButton.setBounds(30, 10, 110, 150);
 		panel.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("\u8FD4\u56DE");
-		btnNewButton_1.setFont(new Font("楷体", Font.PLAIN, 20));
+		JButton btnNewButton_1 = new JButton("");
+		btnNewButton_1.setBounds(170, 10, 110, 150);
 		panel.add(btnNewButton_1);
 		
+		JButton btnNewButton_2 = new JButton("");
+		btnNewButton_2.setBounds(310, 10, 110, 150);
+		panel.add(btnNewButton_2);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setEnabled(false);
+		textArea.setEditable(false);
+		textArea.setFont(new Font("楷体", Font.PLAIN, 20));
+		textArea.setBounds(30, 170, 110, 30);
+		panel.add(textArea);
+		
+		JTextArea textArea_1 = new JTextArea();
+		textArea_1.setEnabled(false);
+		textArea_1.setEditable(false);
+		textArea_1.setFont(new Font("楷体", Font.PLAIN, 20));
+		textArea_1.setBounds(170, 170, 110, 30);
+		panel.add(textArea_1);
+		
+		JTextArea textArea_2 = new JTextArea();
+		textArea_2.setEnabled(false);
+		textArea_2.setEditable(false);
+		textArea_2.setFont(new Font("楷体", Font.PLAIN, 20));
+		textArea_2.setText("");
+		textArea_2.setBounds(310, 170, 110, 30);
+		panel.add(textArea_2);
+		
+		JCheckBox chckbxNewCheckBox = new JCheckBox("选择");
+		chckbxNewCheckBox.setHorizontalAlignment(SwingConstants.CENTER);
+		chckbxNewCheckBox.setFont(new Font("楷体", Font.PLAIN, 12));
+		chckbxNewCheckBox.setBounds(30, 200, 110, 25);
+		panel.add(chckbxNewCheckBox);
+		
+		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("选择");
+		chckbxNewCheckBox_1.setHorizontalAlignment(SwingConstants.CENTER);
+		chckbxNewCheckBox_1.setFont(new Font("楷体", Font.PLAIN, 12));
+		chckbxNewCheckBox_1.setBounds(170, 200, 110, 25);
+		panel.add(chckbxNewCheckBox_1);
+		
+		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("选择");
+		chckbxNewCheckBox_2.setHorizontalAlignment(SwingConstants.CENTER);
+		chckbxNewCheckBox_2.setFont(new Font("楷体", Font.PLAIN, 12));
+		chckbxNewCheckBox_2.setBounds(310, 200, 110, 25);
+		panel.add(chckbxNewCheckBox_2);
+		
 		JPanel panel_1 = new JPanel();
-		frame.getContentPane().add(panel_1, BorderLayout.NORTH);
+		frame6.getContentPane().add(panel_1, BorderLayout.SOUTH);
+		panel_1.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel = new JLabel("\u8BF7\u9009\u62E9\u65F6\u95F4");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_1.add(lblNewLabel);
+		JButton btnNewButton_3 = new JButton("确定");
+		btnNewButton_3.setFont(new Font("楷体", Font.PLAIN, 20));
+		panel_1.add(btnNewButton_3, BorderLayout.EAST);
 		
-		JPanel panel_2 = new JPanel();
-		frame.getContentPane().add(panel_2, BorderLayout.CENTER);
-		panel_2.setLayout(new MigLayout("", "[][][][][][][grow]", "[][][][][][]"));
-		
-		JLabel lblNewLabel_1 = new JLabel("\u5E74\u4EFD");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_2.add(lblNewLabel_1, "cell 1 1");
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"}));
-		comboBox.setMaximumRowCount(9);
-		panel_2.add(comboBox, "cell 6 1,growx");
-		
-		JLabel lblNewLabel_2 = new JLabel("\u6708\u4EFD");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_2.add(lblNewLabel_2, "cell 1 3");
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
-		comboBox_1.setMaximumRowCount(12);
-		panel_2.add(comboBox_1, "cell 6 3,growx");
-		
-		JLabel lblNewLabel_3 = new JLabel("\u65E5\u671F");
-		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel_2.add(lblNewLabel_3, "cell 1 5");
-		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
-		comboBox_2.setMaximumRowCount(31);
-		panel_2.add(comboBox_2, "cell 6 5,growx");
 	}
-
 }

@@ -16,8 +16,29 @@ Socket client=null;
 Socket client2=null;
 
 Movie movie=new Movie();
-movie.init();
-movie.file();
+
+
+try {
+	FileOutputStream out=new FileOutputStream(".//ClientLibrary.dat");
+    ObjectOutputStream object=new ObjectOutputStream(out);
+    object.writeObject(new Hash());
+    object.close();
+    out.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+try {
+	
+	FileOutputStream out=new FileOutputStream(".//ClientsRecords.dat");
+    ObjectOutputStream object=new ObjectOutputStream(out);
+    object.writeObject(new Hash());
+    object.close();
+    out.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 while(true){
 	 try {
 		serversocket=new ServerSocket(5555);    //绑定端口5555监听客户请求
@@ -41,6 +62,7 @@ while(true){
 	 t.start();
 	 try{
 		 serversocket.close();
+		 serversocket2.close();
 	 }catch(IOException e){
 		 System.out.print("false");
 		

@@ -1,4 +1,4 @@
-package test;
+package cn.wsh.client;
 
 import java.awt.*;
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class C7 extends JFrame {
 	/**
 	 * Create the application.
 	 */
-	public C7() {
+	public void  C7() {
 		initialize();
 	}
 
@@ -51,8 +51,21 @@ public class C7 extends JFrame {
 		textArea.setEnabled(false);
 		textArea.setEditable(false);
 		textArea.setFont(new Font("楷体", Font.PLAIN, 20));
-		textArea.setBounds(0, 0, 440, 220);
+		textArea.setBounds(0, 0, 440, 110);
 		panel.add(textArea);
+		
+		JLabel lblNewLabel = new JLabel("影评");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("楷体", Font.PLAIN, 20));
+		lblNewLabel.setBounds(0, 110, 440, 25);
+		panel.add(lblNewLabel);
+		
+		JTextArea textArea_1 = new JTextArea();
+		textArea_1.setFont(new Font("楷体", Font.PLAIN, 20));
+		textArea_1.setEnabled(false);
+		textArea_1.setEditable(false);
+		textArea_1.setBounds(0, 135, 440, 81);
+		panel.add(textArea_1);
 		
 		JPanel panel_1 = new JPanel();
 		frame7.getContentPane().add(panel_1, BorderLayout.SOUTH);
@@ -61,5 +74,4 @@ public class C7 extends JFrame {
 		btnNewButton.setFont(new Font("楷体", Font.PLAIN, 20));
 		panel_1.add(btnNewButton);
 	}
-
 }

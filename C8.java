@@ -1,13 +1,24 @@
-package test;
+package cn.wsh.client;
 
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
-import net.miginfocom.swing.MigLayout;
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class C8 extends JFrame {
 
-	private JFrame frame8;
+	public JFrame frame8;
 
 	/**
 	 * Launch the application.
@@ -36,6 +47,7 @@ public class C8 extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		//os.println();
 		frame8 = new JFrame();
 		frame8.setFont(new Font("楷体", Font.PLAIN, 12));
 		frame8.setTitle("选择时间");
@@ -45,13 +57,7 @@ public class C8 extends JFrame {
 		JPanel panel = new JPanel();
 		frame8.getContentPane().add(panel, BorderLayout.SOUTH);
 		
-		JButton btnNewButton = new JButton("确定");
-		btnNewButton.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel.add(btnNewButton);
-		
-		JButton btnNewButton_1 = new JButton("返回");
-		btnNewButton_1.setFont(new Font("楷体", Font.PLAIN, 20));
-		panel.add(btnNewButton_1);
+	
 		
 		JPanel panel_1 = new JPanel();
 		frame8.getContentPane().add(panel_1, BorderLayout.NORTH);
@@ -63,8 +69,8 @@ public class C8 extends JFrame {
 		
 		JPanel panel_2 = new JPanel();
 		frame8.getContentPane().add(panel_2, BorderLayout.CENTER);
-		panel_2.setLayout(new MigLayout("", "[40px][50px][40px][38px][40px][38px][][][][][]", "[24px][][][][][]"));
-		panel_2.setLayout(new MigLayout("", "[1px][][][][][][][]", "[1px][][][][][][]"));
+		panel_2.setLayout(new FlowLayout());
+		panel_2.setLayout(new FlowLayout());
 		
 		JLabel lblNewLabel_1 = new JLabel("年份");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -77,6 +83,7 @@ public class C8 extends JFrame {
 		comboBox.setMaximumRowCount(9);
 		comboBox.setFont(new Font("楷体", Font.PLAIN, 12));
 		panel_2.add(comboBox, "cell 7 1,grow");
+		String s1=(String) comboBox.getEditor().getItem();
 		
 		JLabel lblNewLabel_2 = new JLabel("月份");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -89,6 +96,7 @@ public class C8 extends JFrame {
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
 		comboBox_1.setMaximumRowCount(12);
 		panel_2.add(comboBox_1, "cell 7 3,grow");
+		String s2=(String) comboBox_1.getEditor().getItem();
 		
 		JLabel lblNewLabel_3 = new JLabel("日期");
 		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -101,6 +109,60 @@ public class C8 extends JFrame {
 		comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
 		comboBox_2.setMaximumRowCount(31);
 		panel_2.add(comboBox_2, "cell 7 5,grow");
+		final String s3=(String) comboBox_2.getEditor().getItem();
+		String s=s1+"-"+s2+"-"+s3;
+		
+		JButton btnNewButton = new JButton("确定");
+		btnNewButton.setFont(new Font("楷体", Font.PLAIN, 20));
+		btnNewButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			
+				// TODO Auto-generated method stub
+				TX.os.println(s3);
+				TX.os.flush();
+				String str;
+				try {
+					str = TX.is.readLine();
+					if(str.equals("true")){
+						frame8.setVisible(false);
+						EventQueue.invokeLater(new Runnable() {
+							public void run() {
+								try {
+									C9 window = new C9();
+									window.frame9.setVisible(true);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						});
+						}else if(str.equals("false")){
+							EventQueue.invokeLater(new Runnable() {
+								public void run() {
+									try {
+										Warning frame = new Warning();
+										frame.setVisible(true);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							});
+			
+						}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+			
+		});
+		panel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("返回");
+		btnNewButton_1.setFont(new Font("楷体", Font.PLAIN, 20));
+		panel.add(btnNewButton_1);
 	}
 
 }

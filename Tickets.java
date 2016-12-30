@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
@@ -16,6 +17,8 @@ private Socket client2;
 private BufferedReader is;                                      //socket输入流
 private PrintWriter os;                                        //socket输出流
 private AllMovie movie;                                          //运用多态性
+private Hash hash;
+private Hash list;
 private Hashtable<String,AllMovie> table;                     //文件中写入多个对象，实现对对象数据的修改 
 private Hashtable<String,ClientsRecords> records ; 
 private FileOutputStream fos;                                 //文件输出流，用于写入电影对象
@@ -35,7 +38,10 @@ private DataOutputStream data;
    public Tickets(Socket client,Socket client2){
 	 this.client=client;
 	 this.client2=client2;
-	 table=new Hashtable<String,AllMovie>();
+	
+	  table=new Hashtable<String,AllMovie>();
+	  records=new Hashtable<String,ClientsRecords>();
+	 hash=new Hash();
 	 customer=new Customer();
 	  initialize();
    }
@@ -59,17 +65,15 @@ private DataOutputStream data;
 	public void run(){
 		try {
 			initialize();
-			System.out.print("true");
-			//os.println(true);
-		   // os.flush();
+			 movie_information();//传输文件和图片
+		    String str=is.readLine();
+		    if(str.equals("true")){
+		    	  information();//创建账户
+		    }else if(str.equals("false") ){
+		    	log();//登陆账户
+		    }
 		   
-		    
-		/*    if(is.readLine().equals("true")){
-		    	  information();
-		    }else {
-		    	log();
-		    }*/
-		    movie_information();
+		    assess();
 			os.println(true);
 			os.flush();
 			action();
@@ -96,7 +100,10 @@ private DataOutputStream data;
     	try {
     		fis=new FileInputStream(".//ClientsRecords.dat");
 			in=new ObjectInputStream(fis);
-			records=(Hashtable)in.readObject();
+			
+			list=(Hash)in.readObject();
+			records=list.records;
+			System.out.print("2");
 			while(true){
 				String str="1234567890abcdefghijklmnopqlstuvwxyz";
 				String check_code=check_code(str,4);                                                   //验证码    
@@ -109,7 +116,7 @@ private DataOutputStream data;
 				String checkcode=is.readLine();
 				boolean contigo=false;		
 				
-			for(int i=0;i<table.size();i++){
+			for(int i=0;i<records.size();i++){
 				try{
 				if(records.get(name)!=null){                           //此处有可能发生异常，需处理
 					if(records.get(name).code.equals(code)){
@@ -126,28 +133,37 @@ private DataOutputStream data;
 							os.println(false);
 							System.out.println("验证码输入错误");
 							os.flush();
+							os.println("验证码输入错误");
+							os.flush();
 						}
 				}else{
 					os.println(false);
 					System.out.println("密码输入错误");
+					os.flush();
+					os.println("密码输入错误");
 					os.flush();
 				}
 				}else{
 					os.println(false);
 					System.out.println("用户名不存在");
 					os.flush();
+					os.println("用户名不存在");
+					os.flush();
 				}
 				}catch(Exception e){
 					os.println(false);
 					System.out.println("该用户不存在");                                 //
-					os.flush();                                                //
+					os.flush();    
+					os.println("该用户不存在");
+					os.flush();
 				}
 			}
-			if(name.equals("false")||contigo==true)
+			if(contigo==true)
 				break;	
-			os.println(false);
-			os.flush();
+			
 			}
+			in.close();
+			fis.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -155,6 +171,8 @@ private DataOutputStream data;
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+    	
+    	
     }
     
     
@@ -175,7 +193,7 @@ private DataOutputStream data;
 			    newClients.name=customer.name;
 			    newClients.cellphone=customer.cellphone;
 			    newClients.code=code;
-				records.put(name,newClients);                  //向文件中写入新的客户信息
+				
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -193,135 +211,153 @@ private DataOutputStream data;
 	public void movie_information(){
 		
 		  try {
-			  String[] str=new String[3];
+			  String[] str=new String[6];
 			  str[0]=".\\1283314_144021_7455.jpg";
 			  str[1]=".\\17_1471423924110436.jpg";
 			  str[2]=".\\11809-3.jpg";
-			  String[] string=new String[3];
-			  string[2]="TheGreatWall.txt";
-			  string[1]="TheWastedTime.txt";
-			  string[0]="YourName.txt";
+			  str[3]="TheGreatWall.txt";
+			  str[4]="TheWastedTime.txt";
+			  str[5]="YourName.txt";
 			  os.println(str.length);
 			  os.flush();
-			  for(int i=0;i<3;i++){
-			  
+			  for(int i=0;i<6;i++){			  
 			  FileInputStream fis=new FileInputStream(new File(str[i]));
-			  FileInputStream fif=new FileInputStream(new File(string[i]));
 			  os.println(new File(str[i]).length());                            //发送图片的长度
 			  os.flush();
-			  os.println(new File(string[i]).length());                             //发送文件的长度
-			  os.flush();
+			 
 			  }
 			  
-			for(int i=0;i<3;i++){
-				  byte[] sendbyte=new byte[1024];
-				 int length=0;
+			for(int i=0;i<6;i++){
+				  byte[] sendbyte=new byte[(int) new File(str[i]).length()];
+				 int length=-1;
+				
 				 FileInputStream fis=new FileInputStream(new File(str[i]));
-				 FileInputStream fif=new FileInputStream(new File(string[i]));
-			  while ((length = fis.read(sendbyte,0,sendbyte.length)) > 0) {
-			      data.write(sendbyte,0,sendbyte.length);
+				
+				 DataInputStream s=new DataInputStream(fis);
+			  while ((length=s.read(sendbyte))!=-1) {
+			     data.write(sendbyte);
 			      data.flush();
 			      
 			  }
-		//	  data.writeBoolean(true);
-		//	  data.flush();
-			  while((length=fif.read(sendbyte,0,sendbyte.length))>0){
-				  data.write(sendbyte,0,sendbyte.length);
-				  data.flush();
-			  }
-			//  data.writeBoolean(true);
-			//  data.flush();
 			  System.out.println("1");
 			  }
-			/*  for(int i=0;i<3;i++){
-				  sendFile(str[i],new File(string[i]).length());
-			  }*/
-			  data.close();
+		
 			  System.out.println("success");
-			if(is.readLine().equals("true")){                             //打开观众留言
-				if(is.readLine().equals("1")){
-					FileInputStream stream=new FileInputStream("ClientLibrary");					              
-					ObjectInputStream object=new ObjectInputStream(stream);               					
-					Hashtable<String,Customer> hash=(Hashtable)object.readObject();
-					for(int i=0;i<hash.size();i++){
-						if(hash.get(i).tickets_name.equals("YourName")){
-							os.println("用户"+hash.get(i).cellphone+":");
-							os.println(hash.get(i).message);
+		  } catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+	}
+	
+	public void assess(){
+		try {
+		  String yy=is.readLine();
+			if(yy.equals("true")){   
+				//打开观众留言
+			   String str=is.readLine();
+				if(str.equals("1")){
+					
+					
+					FileInputStream	stream = new FileInputStream(".//ClientLibrary.dat");
+					         
+					ObjectInputStream o=new ObjectInputStream(stream);               					
+					Hash assess=(Hash)o.readObject();
+					if(assess.array.size()==0){
+					
+							os.println("亲，还没有人评论哦   快来踩一踩吧");
+							os.flush();
+						
+					}else{
+					for(int i=0;i<assess.array.size();i++){
+						if(assess.array.get(i)!=null){					
+						if(assess.array.get(i).tickets_name.equals("你的名字(电影单价40)")){
+							System.out.println(assess.array.get(i).message);
+							os.println("用户"+assess.array.get(i).cellphone+":");
+							os.println(assess.array.get(i).message);
 							os.flush();
 						}
+						
 					}
+					}
+					}
+					os.println(true);
+					os.flush();
 					stream.close();
-					object.close();
-				}
-				if(is.readLine().equals("2")){
-						FileInputStream stream=new FileInputStream("ClientLibrary");					              
+					o.close();
+				
+				}else if(str.equals("2")){
+						FileInputStream stream=new FileInputStream(".//ClientLibrary.dat");					              
 						ObjectInputStream object=new ObjectInputStream(stream);               					
-						Hashtable<String,Customer> hash=(Hashtable)object.readObject();
-						for(int i=0;i<hash.size();i++){
-							if(hash.get(i).tickets_name.equals("YourName")){
-								os.println("用户"+hash.get(i).cellphone+":");
-								os.println(hash.get(i).message);
+						Hash assess=(Hash)object.readObject();
+						System.out.println(assess.list.size());
+						if(assess.array.size()==0){
+							
+							os.println("亲，还没有人评论哦   快来踩一踩吧");
+							os.flush();
+						
+					}else{
+						for(int i=0;i<assess.list.size();i++){
+							if(assess.array.get(i)!=null){
+							if(assess.array.get(i).equals("长城(电影单价60)")){
+								os.println("用户"+assess.array.get(i).cellphone+":");
+								os.println(assess.array.get(i).message);
 								os.flush();
 							}
+							}else continue;
 						}
+					}
+						os.println(true);
+						os.flush();
 						stream.close();
 						object.close();
-							}
+							
 								
-				if(is.readLine().equals("3")){
-								FileInputStream stream=new FileInputStream("ClientLibrary");					              
-								ObjectInputStream object=new ObjectInputStream(stream);               					
-								Hashtable<String,Customer> hash=(Hashtable)object.readObject();
-								for(int i=0;i<hash.size();i++){
-									if(hash.get(i).tickets_name.equals("YourName")){
-										os.println("用户"+hash.get(i).cellphone+":");
-										os.println(hash.get(i).message);
+				}else if(str.equals("3")){
+								FileInputStream stream=new FileInputStream(".//ClientLibrary.dat");					              
+								ObjectInputStream object = new ObjectInputStream(stream);
+											
+								Hash assess = (Hash)object.readObject();
+								System.out.println(assess.list.size());
+								if(assess.array.size()==0){
+									
+									os.println("亲，还没有人评论哦   快来踩一踩吧");
+									os.flush();
+								
+							}else{
+								for(int i=0;i<assess.array.size();i++){
+									if(assess.array.get(i)!=null){
+									if(assess.array.get(i).tickets_name.equals("罗曼蒂克消亡史(电影单价40)")){
+										os.println("用户"+assess.array.get(i).cellphone+":");
+										os.println(assess.array.get(i).message);
 										os.flush();
 					}
+									}else continue;
 				}
+							}
+								os.println(true);
+								os.flush();
 								stream.close();
 								object.close();
+				}
 			}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}              							     
+		
 	}
 	
-	
-	public void sendFile(String str,long h){
-		try {
-			data=new DataOutputStream(client.getOutputStream());
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}            
-		
-		
-	  try {
-		  FileInputStream fis = new FileInputStream(new File(str));
-			int count=0;
-		  byte[] sendbyte=new byte[1024];
-			 int length=0;
-		while ((length = fis.read(sendbyte,0,sendbyte.length)) > 0) {
-		      data.write(sendbyte,0,sendbyte.length);
-		      data.flush();
-		  }
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	     
-	 
-	}
 	
 	//选择电影
 	public void  action() throws IOException{
-		if(is.readLine().equals("1")){			
+		String str=is.readLine();
+		if(str.equals("1")){			
 			os.println(true);
 			os.flush();
 
@@ -329,25 +365,38 @@ private DataOutputStream data;
 			System.out.println("你的名字");
 			int hall=Integer.parseInt(is.readLine());                                 //电影场次
 			customer.hall=hall;
+			hall=hall-1;
 			os.println(true);
 			os.flush();
+			while(true){
 			movie_one( hall);
+			if(is.readLine().equals("true")){
+				System.out.println("fdas");
+				break;
+			}
+			}
 			
 		}
-		if(is.readLine().equals("2")){			
+		if(str.equals("2")){			
 			os.println(true);
 			os.flush();
 
-			customer.tickets_name="长城(电影单价60)";
+			customer.tickets_name="长城(电影单价40)";
 			System.out.println("长城");
 			int hall=Integer.parseInt(is.readLine());
 			customer.hall=hall;
+			hall=hall-1;
 			os.println(true);
 			os.flush();
-			movie_one( hall);
+			while(true){
+				movie_one( hall);
+				if(is.readLine().equals("true"))
+					break;
+				}
+			
 			
 		}
-		if(is.readLine().equals("3")){			
+		if(str.equals("3")){			
 			os.println(true);
 			os.flush();
 
@@ -355,9 +404,14 @@ private DataOutputStream data;
 			System.out.println("罗曼蒂克消亡史");
 			int hall=Integer.parseInt(is.readLine());
 			customer.hall=hall;
+			hall=hall-1;
 			os.println(true);                       //再次发送信号
 			os.flush();
-			movie_one( hall);
+			while(true){
+				movie_one( hall);
+				if(is.readLine().equals("true"))
+					break;
+				}
 			
 		}
 	}
@@ -379,10 +433,12 @@ private DataOutputStream data;
 			String s=String.valueOf(days);           		                                               
 			filename="MovieName.dat";                           //确定读入文件名,确定电影日期
 			fis=new FileInputStream(filename);                 //创建输入对象流
-			in=new ObjectInputStream(fis);               
-			table=(Hashtable)in.readObject();               //
-			movie=table.get(s);                             //通过键值调用特定对象
-			
+			in=new ObjectInputStream(fis); 
+		    hash=(Hash)in.readObject();               //
+		    movie=hash.allmovie.get(s);                            //通过键值调用特定对象
+		    int a=movie.getMoney();
+		    
+		    System.out.println(a);
 			if(days>0){
 				customer.time=str;
 				customer.date=date1;
@@ -390,7 +446,7 @@ private DataOutputStream data;
 				os.flush();
 		
 			}else if(days==0){
-				if(date.getHours()>=movie.time[hall]){
+				if(date.getHours()>=movie.time[hall]){           
 					os.println(false);
 					os.flush();
 				}else {
@@ -417,7 +473,7 @@ private DataOutputStream data;
 	
 	
 	//计算时间差，从而调用相应文件
-	  public int daysBetween(String smdate,String bdate) throws ParseException{  
+	 public int daysBetween(String smdate,String bdate) throws ParseException{  
 	        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
 	        Calendar cal = Calendar.getInstance();    
 	        cal.setTime(sdf.parse(smdate));    
@@ -435,44 +491,39 @@ private DataOutputStream data;
 		
 		try {
 		    int k=Integer.parseInt(is.readLine());   
+		    k=k-1;
 		    System.out.print("场次：");
 		    System.out.println(k);                            //接收电影场次信息
 			for(int i=0;i<10;i++){
 				for(int j=0;j<10;j++){
-					os.println(movie.seat[k][i][j]);
+					os.println(movie.getSeat(i, j, k));
 					os.flush();                         //向客户端发送座位情况
 				}
 			}
-			
+			int i=0;
 			while(true){ 
-				int i=0;//判断条件  直到客户端发出结束请求结束循环
+				//判断条件  直到客户端发出结束请求结束循环
 				String str=is.readLine();
 				if(str.equals("false"))
 					break;
 			int seat=Integer.parseInt(str);
 			int row=seat/100;
 			int line=seat%100;
-			movie.seat[k][row][line]=false;
-			customer.price+=movie.money;
+			movie.setSeat(row, line, k);
+			//customer.price+=movie.getMoney();
 			String s1=String.valueOf(row);
 			String s2=String.valueOf(line);
-			customer.seat[0]=row+"排"+line+"座";
+			customer.seat[i]=row+"排"+line+"座";
 			System.out.println("座位：");
 			System.out.print(row);
 			System.out.print(line);
-			movie.number--;
-			
-			
+			movie.setNumber();
 			os.println(true);
 			os.flush();
-			
-	
 			i++;
-			if(i>4){                   //每人最多购买五个座位;
-				os.print(false);
-				os.flush();
+			customer.number++;
 			}
-			}
+			customer.price=i*movie.getMoney();
 		} catch ( IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -484,7 +535,7 @@ private DataOutputStream data;
 	
 	
 	//打印购票信息，生成取票码
-		public void print() {
+	public void print() {
 			      String str="1234567890";
 				  String code=check_code(str,9);		
 				  
@@ -492,12 +543,13 @@ private DataOutputStream data;
 			      System.out.println(code);
 
 			      customer.code=code;  
+			      
 			      os.println(code); 
 			      os.flush();
 		}
 		
 		//生成验证码   取票码
-		public String check_code(String str,int length){
+	public String check_code(String str,int length){
 			     String base = str;
 			    Random random = new Random();   
 			    StringBuffer sb = new StringBuffer();   
@@ -510,12 +562,13 @@ private DataOutputStream data;
 		
 		
 		//向客户传输购买信息,并返回消费评价
-		public void transit(){
+	public void transit(){
 			
 		try {
+			
 			//向客户传输信息
-			files=new FileOutputStream("ClientsRecords");
-			object=new ObjectOutputStream(files);
+			fis=new FileInputStream(".//ClientsRecords.dat");
+			in=new ObjectInputStream(fis);
 			if(is.readLine()=="true")     //判断会员等级
 			customer.member=true;
 			if(customer.member==true)    //得到本次积分
@@ -524,7 +577,14 @@ private DataOutputStream data;
 			
 			newClients.member_score+=customer.member_score;
 			newClients.records++;
-			object.writeObject(records);                     //写入消费记录
+			Hash label=new Hash(); 
+			label=(Hash)in.readObject();
+			label.records.put(name, newClients);
+			in.close();
+			fis.close();
+			files=new FileOutputStream(".//ClientsRecords.dat");
+			object=new ObjectOutputStream(files);
+			object.writeObject(label);
 			
 			os.println(customer.name);
 			os.flush();
@@ -538,14 +598,17 @@ private DataOutputStream data;
 			os.flush();
 			os.println(customer.time);
 			os.flush();
-			os.println(customer.date);
-			os.flush();
 			
+			SimpleDateFormat s1=new SimpleDateFormat(" yyyy-MM-dd ");
+			Date date=new Date();
+			String date1=s1.format(date);
+			customer.date=date1;
 			
-			for(int i=0;i<customer.seat.length;i++){
+			for(int i=0;i<customer.number;i++){
 				os.println(customer.seat[i]);
 				os.flush();
 			}
+			
 			os.println(customer.price);
 			os.flush();
 			os.println(customer.date);
@@ -553,30 +616,41 @@ private DataOutputStream data;
 		
 			
 			String str=is.readLine();                     //得到用户评价
-			customer.message=str;  
-			Hashtable<String,Customer> list=new Hashtable<String,Customer>();
-			 list.put(customer.tickets_name,customer);
-			files=new FileOutputStream("ClientLibrary");
+			customer.message=str; 
+			System.out.println(customer.message);
+			fis=new FileInputStream(".//ClientLibrary.dat");
+			in=new ObjectInputStream(fis);
+		    Hash array = (Hash)in.readObject();
+			//array.list.put(customer.tickets_name,customer);
+		    array.array.add(customer);
+			in.close();
+			fis.close();
+			files=new FileOutputStream(".//ClientLibrary.dat");
 			object=new ObjectOutputStream(files);
-			object.writeObject(list);           //写入对象
+			object.writeObject(array);           //写入对象
 			object.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 		}
 		
 		//写入修改了的文件,关闭流，断开连接
-		public void end(){
+	public void end(){
 			try {
-				fos=new FileOutputStream(filename);
+				 fos=new FileOutputStream(filename);
 			     out=new ObjectOutputStream(fos);                     //
-			     out.writeObject(table);                           //将文件中的多个对象再次写入			    
+			     out.writeObject(hash);                           //将文件中的多个对象再次写入			    
 			     out.close();
-			     in.close();
 			     os.close();
 				 is.close();
+				 data.close();
 				 client.close();
+				 client2.close();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

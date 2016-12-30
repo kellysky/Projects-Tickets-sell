@@ -8,6 +8,13 @@ public  class Movie {
 	public YourName_Server[] yourname=new YourName_Server[15];
 	public GreatWall[]       greatwall=new GreatWall[15];
 	public TheWastedTime[] thewastedtime=new TheWastedTime[15];
+	public Hash hash;
+	
+	public Movie(){
+		hash=new Hash();
+		init();
+		file();
+	}
    public void init(){
 	for(int i=0;i<15;i++){
 		yourname[i]=new YourName_Server();
@@ -18,35 +25,24 @@ public  class Movie {
 	
 }
    public void file(){	   
-	   Hashtable<String,YourName_Server> table=new Hashtable<String,YourName_Server>();
-	   Hashtable<String,GreatWall> table2=new Hashtable<String,GreatWall>();
-	   Hashtable<String,TheWastedTime> table3=new Hashtable<String,TheWastedTime>();
+	
 	   
 	   String name=".\\MovieName.dat";
 	  
   
 		for(int i=0;i<15;i++){
 			String str=String.valueOf(i);	   
-		  
+			hash.allmovie.put(str, greatwall[i]);
+			hash.allmovie.put(str, yourname[i]);
+			hash.allmovie.put(str, thewastedtime[i]);
+		}
 		try {
 			FileOutputStream fos = new FileOutputStream(name);
-			FileOutputStream fos2 = new FileOutputStream(name);
-			FileOutputStream fos3 = new FileOutputStream(name);
-			 
 			ObjectOutputStream out=new ObjectOutputStream(fos);
-			table.put(str, yourname[i]);
-			out.writeObject(table);
+		
+			out.writeObject(hash);
 			out.close();
 			
-			ObjectOutputStream out2=new ObjectOutputStream(fos2);
-			table2.put(str, greatwall[i]);
-			out2.writeObject(table2);
-			out2.close();
-			
-			ObjectOutputStream out3=new ObjectOutputStream(fos3);
-			table2.put(str, greatwall[i]);
-			out3.writeObject(table2);
-			out3.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,5 +53,5 @@ public  class Movie {
 		
 		}
 		
-	}
+	
 }

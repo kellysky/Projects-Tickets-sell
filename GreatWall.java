@@ -22,6 +22,29 @@ public class GreatWall extends AllMovie implements Serializable{
 	time[1]=21;
 	time[2]=10;
 	date="2016-12-12";
+	money=40;
 	
 }
+    public int getMoney(){
+    	return this.money;
+    }
+    public boolean getSeat(int i,int j,int k){
+ 	   boolean contigo=false;
+ 	   if(this.seat[k][i][j]==true){
+ 		   contigo=true;
+ 	   }
+ 	   return contigo;
+    }
+    public void setSeat(int i,int j,int k){
+    	this.seat[k][i][j]=false;
+    }
+    public void setNumber(){
+ 	   this.number--;
+    }
+    public String getDate(){
+    	return this.date;
+    }
+    public int getTime(int k){
+    	return this.time[k];
+    }
 }

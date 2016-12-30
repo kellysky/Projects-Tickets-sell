@@ -22,6 +22,29 @@ public class TheWastedTime extends AllMovie implements Serializable{
 	time[1]=18;
 	time[2]=14;
 	date="2016-12-16";
+	money=40;
 }
-
+    public int getMoney(){
+    	return this.money;
+    }
+   public boolean getSeat(int i,int j,int k){
+	   boolean contigo=false;
+	   if(this.seat[k][i][j]==true){
+		   contigo=true;
+	   }
+	   return contigo;
+   }
+   public void setSeat(int i,int j,int k){
+		this.seat[k][i][j]=false;
+	}
+   public void setNumber(){
+	   this.number--;
+   }
+   public String getDate(){
+		return this.date;
+	}
+   public int getTime(int k){
+		return this.time[k];
+	}
+   
 }
